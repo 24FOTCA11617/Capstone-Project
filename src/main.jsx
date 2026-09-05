@@ -37,9 +37,10 @@ const catalogExpansions = {
   'Home Decor': ['Rattan wall basket', 'Abstract art print', 'Cotton macrame hanger', 'Decorative mirror', 'Scented pillar candle', 'Wooden photo frame', 'Linen curtain panel', 'Handmade wall hook', 'Terracotta planter', 'Patterned floor rug'],
 }
 
-const categoryImages = Object.fromEntries(Object.keys(catalogExpansions).map((category) => [category, products.find((product) => product.category === category)?.image || products[0].image]))
+const catalogImagePool = products.map((product) => product.image)
 let nextProductId = products.length + 1
-Object.entries(catalogExpansions).forEach(([category, names]) => names.forEach((name, index) => products.push({ id: nextProductId++, name, category, price: 24 + ((index * 17 + category.length * 3) % 120), tone: 'market', image: categoryImages[category], tag: index % 2 === 0 ? 'New' : 'Brand pick', desc: `A budget-friendly ${category.toLowerCase()} find selected for everyday living.` })))
+let nextImageIndex = 0
+Object.entries(catalogExpansions).forEach(([category, names]) => names.forEach((name, index) => products.push({ id: nextProductId++, name, category, price: 24 + ((index * 17 + category.length * 3) % 120), tone: 'market', image: catalogImagePool[nextImageIndex++ % catalogImagePool.length], tag: index % 2 === 0 ? 'New' : 'Brand pick', desc: `A budget-friendly ${category.toLowerCase()} find selected for everyday living.` })))
 
 const formatPrice = (price) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(price * 84)
 
