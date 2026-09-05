@@ -48,3 +48,17 @@ The account form uses local demo auth by default. To enable real Supabase email/
 5. Redeploy the project.
 
 The checkout currently supports a safe demo flow for UPI, card, and COD. Real Razorpay payments must be implemented through a server-side order endpoint and webhook signature verification. Never expose `RAZORPAY_KEY_SECRET` in a `VITE_` variable or client-side code.
+
+## Backend API routes
+
+Vercel deploys the `api/` directory as serverless functions:
+
+```text
+GET  /api/products?q=light&category=Electronics
+POST /api/orders
+POST /api/payment
+GET  /api/tracking?orderId=NS-123456
+POST /api/support
+```
+
+These routes provide validated demo responses. Before production use, connect orders and tickets to Supabase with row-level security, create Razorpay orders on the server, verify payment webhooks, and connect tracking to a courier provider such as Shiprocket or Delhivery.
