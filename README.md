@@ -36,3 +36,15 @@ For Vercel CLI:
 npm install
 npx vercel
 ```
+
+## Optional integrations
+
+The account form uses local demo auth by default. To enable real Supabase email/password authentication:
+
+1. Create a Supabase project and enable Email Auth.
+2. Copy `.env.example` to `.env.local`.
+3. Add your project URL and anon key to `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+4. Add the same two variables in Vercel under **Settings > Environment Variables**.
+5. Redeploy the project.
+
+The checkout currently supports a safe demo flow for UPI, card, and COD. Real Razorpay payments must be implemented through a server-side order endpoint and webhook signature verification. Never expose `RAZORPAY_KEY_SECRET` in a `VITE_` variable or client-side code.
