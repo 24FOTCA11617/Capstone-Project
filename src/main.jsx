@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Routes, useLocation } from 'react-router-dom'
 import { ArrowRight, Check, ChevronDown, CircleUserRound, Heart, Menu, Search, ShoppingBag, SlidersHorizontal, Sparkles, X } from 'lucide-react'
 import './styles.css'
 
@@ -18,7 +18,10 @@ const products = [
 function App() {
   const [cart, setCart] = useState([])
   const [cartOpen, setCartOpen] = useState(false)
-  const addToCart = (product) => setCart((current) => [...current, product])
+  const addToCart = (product) => {
+    setCart((current) => [...current, product])
+    setCartOpen(true)
+  }
   const removeFromCart = (index) => setCart((current) => current.filter((_, i) => i !== index))
   return <>
     <Header count={cart.length} onCart={() => setCartOpen(true)} />
@@ -83,13 +86,19 @@ function Shop({ addToCart }) {
 
 function ProductCard({ product, addToCart }) {
   const [saved, setSaved] = useState(false)
-  return <article className="product-card"><div className="product-image"><img src={product.image} alt={product.name} />{product.tag && <span className="product-tag">{product.tag}</span>}<button className={saved ? 'save saved' : 'save'} onClick={() => setSaved(!saved)} aria-label="Save item"><Heart size={17} fill={saved ? 'currentColor' : 'none'} /></button><button className="quick-add" onClick={() => addToCart(product)}>Add to bag <ArrowRight size={14} /></button></div><div className="product-info"><div><h3>{product.name}</h3><p>{product.category}</p></div><strong>${product.price}</strong></div></article>
+  const [added, setAdded] = useState(false)
+  const handleAdd = () => {
+    addToCart(product)
+    setAdded(true)
+    window.setTimeout(() => setAdded(false), 1600)
+  }
+  return <article className="product-card"><div className="product-image"><img src={product.image} alt={product.name} />{product.tag && <span className="product-tag">{product.tag}</span>}<button className={saved ? 'save saved' : 'save'} onClick={() => setSaved(!saved)} aria-label="Save item"><Heart size={17} fill={saved ? 'currentColor' : 'none'} /></button><button className={added ? 'quick-add added' : 'quick-add'} onClick={handleAdd}>{added ? <><Check size={14} /> Added to bag</> : <>Add to bag <ArrowRight size={14} /></>}</button></div><div className="product-info"><div><h3>{product.name}</h3><p>{product.category}</p></div><strong>${product.price}</strong></div></article>
 }
 
 function Journal() { return <section className="section journal"><div className="shop-intro"><p className="eyebrow">From the journal</p><h1>Notes on <em>living well.</em></h1></div><div className="journal-grid"><article className="journal-lead"><img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80" alt="Notebook and coffee on a desk" /><p className="eyebrow">Field notes · 06.09.26</p><h2>The case for a slower morning</h2><p>On rituals, good light, and letting the first hour belong to you.</p></article><article className="journal-item"><img src="https://images.unsplash.com/photo-1517840901100-8179e982acb7?auto=format&fit=crop&w=900&q=80" alt="Ceramic cup on a table" /><p className="eyebrow">At home · 05.28.26</p><h3>A cup worth keeping</h3></article><article className="journal-item"><img src="https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=900&q=80" alt="Sunlit studio workspace" /><p className="eyebrow">Making · 05.14.26</p><h3>In praise of the useful</h3></article></div></section> }
 function About() { return <section className="about"><div className="about-hero"><p className="eyebrow">Since 2018</p><h1>Less, but<br /><em>better.</em></h1></div><div className="about-body"><div><p className="eyebrow">Why Northstar</p><h2>We believe the everyday deserves your attention.</h2></div><div><p>Northstar is a small independent shop built around a simple idea: the objects around us shape how we move through the day. We seek out honest materials, thoughtful makers, and pieces that get more beautiful with use.</p><p>There is no rush here. Just a growing collection of things we would be glad to live with ourselves.</p><Link className="text-link" to="/shop">Shop the collection <ArrowRight size={16} /></Link></div></div></section> }
 function Newsletter() { return <section className="newsletter"><div><p className="eyebrow">A note from Northstar</p><h2>Good things, occasionally.</h2><p>New arrivals, field notes, and a little beauty for your inbox.</p></div><form onSubmit={(event) => event.preventDefault()}><input type="email" placeholder="Your email address" aria-label="Your email address" required /><button className="button button-dark">Subscribe <ArrowRight size={15} /></button></form></section> }
-function CartDrawer({ cart, onClose, onRemove }) { const total = cart.reduce((sum, item) => sum + item.price, 0); return <div className="drawer-backdrop" onClick={onClose}><aside className="cart-drawer" onClick={(event) => event.stopPropagation()}><div className="drawer-head"><h2>Your bag <span>{cart.length}</span></h2><button className="icon-button" onClick={onClose} aria-label="Close bag"><X size={20} /></button></div>{cart.length === 0 ? <div className="empty-bag"><ShoppingBag size={30} /><p>Your bag is waiting.</p><Link to="/shop" onClick={onClose}>Browse the collection <ArrowRight size={15} /></Link></div> : <><div className="cart-items">{cart.map((item, index) => <div className="cart-item" key={`${item.id}-${index}`}><img src={item.image} alt="" /><div><h3>{item.name}</h3><p>${item.price}</p><button onClick={() => onRemove(index)}>Remove</button></div></div>)}</div><div className="cart-total"><div><span>Subtotal</span><strong>${total}</strong></div><button className="button button-dark checkout">Checkout <ArrowRight size={15} /></button><small>Taxes and shipping calculated at checkout.</small></div></>}</aside></div> }
+function CartDrawer({ cart, onClose, onRemove }) { const [checkoutStarted, setCheckoutStarted] = useState(false); const total = cart.reduce((sum, item) => sum + item.price, 0); return <div className="drawer-backdrop" onClick={onClose}><aside className="cart-drawer" onClick={(event) => event.stopPropagation()}><div className="drawer-head"><h2>Your bag <span>{cart.length}</span></h2><button className="icon-button" onClick={onClose} aria-label="Close bag"><X size={20} /></button></div>{cart.length === 0 ? <div className="empty-bag"><ShoppingBag size={30} /><p>Your bag is waiting.</p><Link to="/shop" onClick={onClose}>Browse the collection <ArrowRight size={15} /></Link></div> : checkoutStarted ? <div className="checkout-message"><Check size={30} /><h3>Ready for checkout</h3><p>This demo checkout is ready to connect to your payment provider.</p><button className="button button-dark" onClick={() => setCheckoutStarted(false)}>Back to bag</button></div> : <><div className="cart-items">{cart.map((item, index) => <div className="cart-item" key={`${item.id}-${index}`}><img src={item.image} alt="" /><div><h3>{item.name}</h3><p>${item.price}</p><button onClick={() => onRemove(index)}>Remove</button></div></div>)}</div><div className="cart-total"><div><span>Subtotal</span><strong>${total}</strong></div><button className="button button-dark checkout" onClick={() => setCheckoutStarted(true)}>Checkout <ArrowRight size={15} /></button><small>Taxes and shipping calculated at checkout.</small></div></>}</aside></div> }
 function Footer() { return <footer><div className="footer-top"><Link to="/" className="logo">NORTHSTAR<span>MARKET</span></Link><p>Considered goods for everyday living.</p><div className="footer-links"><Link to="/shop">Shop</Link><Link to="/journal">Journal</Link><Link to="/about">Our story</Link></div></div><div className="footer-bottom"><span>© 2026 Northstar Market</span><span>Made with intention.</span></div></footer> }
 
 createRoot(document.getElementById('root')).render(<BrowserRouter><App /></BrowserRouter>)
