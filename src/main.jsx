@@ -24,22 +24,6 @@ const products = [
   { id: 16, name: 'Ceramic spice jars', category: 'Kitchen', price: 47, tone: 'white', image: 'https://images.unsplash.com/photo-1583947215259-38e31be8751f?auto=format&fit=crop&w=900&q=80', tag: '', desc: 'A tidy set of labeled jars for the everyday kitchen.' },
 ]
 
-const catalogExpansions = {
-  Carry: ['Recycled canvas tote', 'Travel organizer pouch'],
-  Home: ['Linen cushion cover', 'Handmade breakfast bowl'],
-  Wear: ['Minimal field cap', 'Everyday leather belt'],
-  Ritual: ['Morning pour-over kit', 'Lavender sleep mist'],
-  Beauty: ['Rose water toner', 'Daily SPF lotion'],
-  Fashion: ['Relaxed cotton kurta', 'Printed everyday dress'],
-  Electronics: ['USB-C charging dock', 'Compact wireless speaker'],
-  Kitchen: ['Wooden chopping board', 'Glass storage jars'],
-  Kids: ['Soft cotton play set', 'Wooden stacking toy'],
-  'Home Decor': ['Rattan wall basket', 'Abstract art print'],
-}
-
-let nextProductId = products.length + 1
-Object.entries(catalogExpansions).forEach(([category, names]) => names.forEach((name, index) => { const id = nextProductId++; const imageQuery = category.toLowerCase().replace(/\s+/g, ','); products.push({ id, name, category, price: 24 + ((index * 17 + category.length * 3) % 120), tone: 'market', image: `https://loremflickr.com/900/900/${imageQuery}?lock=${id}`, tag: index % 2 === 0 ? 'New' : 'Brand pick', desc: `A budget-friendly ${category.toLowerCase()} find selected for everyday living.` }) }))
-
 const formatPrice = (price) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(price * 84)
 
 function App() {
