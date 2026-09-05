@@ -25,21 +25,20 @@ const products = [
 ]
 
 const catalogExpansions = {
-  Carry: ['Recycled canvas tote', 'Travel organizer pouch', 'Everyday crossbody', 'Foldable market bag', 'Utility belt bag', 'Weekend duffel', 'Mini phone sling', 'Waterproof day pouch', 'Cotton laptop sleeve', 'Woven shoulder bag'],
-  Home: ['Linen cushion cover', 'Handmade breakfast bowl', 'Oak serving board', 'Soft cotton hand towel', 'Glass bud vase', 'Brass candle holder', 'Wool floor cushion', 'Stone soap dish', 'Ceramic table lamp', 'Handloom table runner'],
-  Wear: ['Minimal field cap', 'Everyday leather belt', 'Soft ribbed socks', 'Canvas utility jacket', 'Classic metal sunglasses', 'Travel scarf', 'Slim card wallet', 'Relaxed linen trousers', 'Cotton crew tee', 'Daily analog watch'],
-  Ritual: ['Morning pour-over kit', 'Lavender sleep mist', 'Hand-poured soy candle', 'Daily gratitude journal', 'Bamboo meditation cushion', 'Herbal tea sampler', 'Cedar bath brush', 'Travel aromatherapy roll-on', 'Brass bookmark', 'Quiet evening card set'],
-  Beauty: ['Rose water toner', 'Daily SPF lotion', 'Lip care duo', 'Aloe body gel', 'Overnight repair cream', 'Natural hair oil', 'Clay face mask', 'Vitamin C serum', 'Hand care trio', 'Gentle bath salts'],
-  Fashion: ['Relaxed cotton kurta', 'Printed everyday dress', 'Comfort joggers', 'Oversized linen shirt', 'Textured summer top', 'Straight fit denim', 'Lightweight shrug', 'Everyday cotton saree', 'Knit lounge set', 'Canvas slip-on shoes'],
-  Electronics: ['USB-C charging dock', 'Compact wireless speaker', 'Clip-on desk fan', 'Braided charging cable', 'Smart desk clock', 'Noise-reducing earbuds', 'Rechargeable reading lamp', 'Phone stand', 'Travel power adapter', 'Mini keyboard'],
-  Kitchen: ['Wooden chopping board', 'Glass storage jars', 'Cotton apron', 'Bamboo cutlery set', 'Insulated water bottle', 'Silicone baking mat', 'Stainless steel strainer', 'Ceramic coffee mug', 'Spice rack organizer', 'Handheld milk frother'],
-  Kids: ['Soft cotton play set', 'Wooden stacking toy', 'Animal print backpack', 'Reusable snack box', 'Rainbow building blocks', 'Kids cotton night suit', 'Washable art kit', 'Soft hooded towel', 'Storytime floor mat', 'Little explorer cap'],
-  'Home Decor': ['Rattan wall basket', 'Abstract art print', 'Cotton macrame hanger', 'Decorative mirror', 'Scented pillar candle', 'Wooden photo frame', 'Linen curtain panel', 'Handmade wall hook', 'Terracotta planter', 'Patterned floor rug'],
+  Carry: ['Recycled canvas tote', 'Travel organizer pouch'],
+  Home: ['Linen cushion cover', 'Handmade breakfast bowl'],
+  Wear: ['Minimal field cap', 'Everyday leather belt'],
+  Ritual: ['Morning pour-over kit', 'Lavender sleep mist'],
+  Beauty: ['Rose water toner', 'Daily SPF lotion'],
+  Fashion: ['Relaxed cotton kurta', 'Printed everyday dress'],
+  Electronics: ['USB-C charging dock', 'Compact wireless speaker'],
+  Kitchen: ['Wooden chopping board', 'Glass storage jars'],
+  Kids: ['Soft cotton play set', 'Wooden stacking toy'],
+  'Home Decor': ['Rattan wall basket', 'Abstract art print'],
 }
 
-const categoryImages = Object.fromEntries(Object.keys(catalogExpansions).map((category) => [category, products.find((product) => product.category === category)?.image || products[0].image]))
 let nextProductId = products.length + 1
-Object.entries(catalogExpansions).forEach(([category, names]) => names.forEach((name, index) => products.push({ id: nextProductId++, name, category, price: 24 + ((index * 17 + category.length * 3) % 120), tone: 'market', image: categoryImages[category], tag: index % 2 === 0 ? 'New' : 'Brand pick', desc: `A budget-friendly ${category.toLowerCase()} find selected for everyday living.` })))
+Object.entries(catalogExpansions).forEach(([category, names]) => names.forEach((name, index) => { const id = nextProductId++; const imageQuery = category.toLowerCase().replace(/\s+/g, ','); products.push({ id, name, category, price: 24 + ((index * 17 + category.length * 3) % 120), tone: 'market', image: `https://loremflickr.com/900/900/${imageQuery}?lock=${id}`, tag: index % 2 === 0 ? 'New' : 'Brand pick', desc: `A budget-friendly ${category.toLowerCase()} find selected for everyday living.` }) }))
 
 const formatPrice = (price) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(price * 84)
 
